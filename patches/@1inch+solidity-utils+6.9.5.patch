@@ -1,0 +1,15 @@
+diff --git a/node_modules/@1inch/solidity-utils/package.json b/node_modules/@1inch/solidity-utils/package.json
+index 45b6757..3a9279e 100644
+--- a/node_modules/@1inch/solidity-utils/package.json
++++ b/node_modules/@1inch/solidity-utils/package.json
+@@ -6,7 +6,9 @@
+   "exports": {
+     ".": "./dist/src/index.js",
+     "./hardhat-setup": "./dist/hardhat-setup/index.js",
+-    "./docgen": "./dist/docgen/index.js"
++    "./docgen": "./dist/docgen/index.js",
++    "./contracts/*.sol": "./contracts/*.sol",
++    "./test/contracts/*.sol": "./test/contracts/*.sol"
+   },
+   "repository": {
+     "type": "git",

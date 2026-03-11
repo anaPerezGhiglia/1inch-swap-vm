@@ -40,7 +40,7 @@ These features work equivalently in Hardhat 3:
 - forge-std cheatcodes (`vm.*`) — all used cheatcodes work correctly
 - Fuzz testing — works with default settings
 - Invariant testing — works across all parametrized contracts
-- Optimizer settings (enabled, runs, via_ir, yul details)
+- Optimizer settings (enabled, runs, via_ir, evmVersion, yul details)
 - `fs_permissions` → `fsPermissions` (read-write directories)
 
 **Features not used by this project:**
@@ -52,9 +52,17 @@ These features work equivalently in Hardhat 3:
 
 ## 3. Workarounds Applied
 
-- **`pnpm.overrides` for `@openzeppelin/contracts`:** Forced all transitive dependencies to use `@openzeppelin/contracts@5.4.0`. Without this, pnpm's strict isolation causes `@1inch/solidity-utils` to resolve `IERC20` from OZ 5.1.0, while the project uses OZ 5.4.0. Solidity treats these as different types, breaking `using SafeERC20 for IERC20` declarations.
+- **`pnpm.overrides` for `@openzeppelin/contracts`:** Forced all transitive dependencies to use `@openzeppelin/contracts@5.4.0`. This workaround is needed because of a fundamental difference in how Forge and Hardhat 3 resolve Solidity imports:
+
+  - **Forge** uses a flat remapping system (`remappings.txt`). The project's `@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/` remapping maps all `@openzeppelin/contracts/` imports — regardless of which package they originate from — to a single directory. Every package sees the same `IERC20` type. ([Forge remappings docs](https://book.getfoundry.sh/reference/forge/forge-remappings/))
+  - **Hardhat 3** uses Node.js module resolution, which respects pnpm's strict per-package isolation ([Hardhat 3 dependencies docs](https://hardhat.org/docs/guides/writing-contracts/dependencies)). Under pnpm, `@1inch/solidity-utils` resolves `@openzeppelin/contracts` to its own declared version (5.1.0), while the project resolves to 5.4.0. Hardhat 3 correctly resolves both versions — but that is precisely the problem: Solidity treats `IERC20` from OZ 5.1.0 and `IERC20` from OZ 5.4.0 as **different types**, breaking `using SafeERC20 for IERC20` declarations.
+
+  The `pnpm.overrides` forces pnpm to flatten all copies to a single version, effectively reproducing Forge's flat remapping behavior at the package manager level.
+
+  **Note on `remappings.txt`:** Hardhat 3 loads `remappings.txt` but scopes each file to its directory — the project-level remappings [do not propagate into `node_modules`](https://hardhat.org/docs/guides/writing-contracts/remappings). So the `@openzeppelin/contracts/` remapping in `remappings.txt` does not help here: it only affects the project's own `.sol` files, not imports inside `@1inch/solidity-utils`. Furthermore, `remappings.txt` is entirely unnecessary for Hardhat 3 — all 701 tests pass without it. Hardhat 3's Node.js resolution handles all import paths that the remappings currently define. The file should be kept for Forge compatibility only.
 - **`patch-package` for `@1inch/solidity-utils`:** Added `"./contracts/*.sol"` and `"./test/contracts/*.sol"` to the package's `exports` field. Without this, Hardhat 3's Node.js `exports` field enforcement blocks Solidity file imports from the package (HHE902).
 - **`"type": "module"` added to `package.json`:** Required by Hardhat 3 (ESM). No existing CommonJS files were affected.
+- **`evmVersion: "cancun"` explicitly set in `hardhat.config.ts`:** `foundry.toml` does not set `evm_version`, but Forge auto-detects the latest EVM version supported by the configured solc version. For solc 0.8.30, that is `cancun`. Hardhat defers to the solc default, which may differ. Setting it explicitly ensures both toolchains compile against the same EVM target.
 - **Import path rewrites:** None needed — all imports use relative paths or package names.
 
 ## 4. Next Steps

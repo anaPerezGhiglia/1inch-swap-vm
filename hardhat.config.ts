@@ -38,6 +38,6 @@ export default defineConfig({
   // Foundry-only settings (no Hardhat equivalent):
   // - [fmt] section — Foundry formatter config; projects typically use prettier or solhint
   // - `out = "out"` — Hardhat uses its own `artifacts/` + `cache/` dirs
-  // - `forge snapshot` — not supported. See: https://github.com/NomicFoundation/hardhat/issues/7769
   // - [profile.ci] — identical compiler settings to [profile.default]; no separate Hardhat profile needed
+  // Gas snapshots: supported via `npx hardhat test solidity --snapshot` / `--snapshot-check`
 });

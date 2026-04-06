@@ -52,7 +52,7 @@ All npm-based (no git submodules, no `lib/` directory):
 | `build` | `forge build` | Yes |
 | `lint` | `forge fmt --check` | No (Foundry-only) |
 | `format` | `forge fmt` | No (Foundry-only) |
-| `snapshot` | `forge snapshot --force --no-match-test "testFuzz_*"` | No ([#7769](https://github.com/NomicFoundation/hardhat/issues/7769)) |
+| `snapshot` | `forge snapshot --force --no-match-test "testFuzz_*"` | Yes (`npx hardhat test solidity --snapshot` / `--snapshot-check`) |
 
 ## Package Manager
 - **No lockfile exists** — using `pnpm` as default

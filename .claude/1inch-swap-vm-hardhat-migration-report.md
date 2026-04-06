@@ -1,16 +1,12 @@
 # 1inch-swap-vm: Hardhat 3 Migration Report
 
-**Hardhat version installed:** `^3.1.11`
-**Migration date:** 2026-03-10
+**Hardhat version installed:** `^3.3.0`
+**Migration date:** 2026-04-06
 **Foundry analysis:** [Foundry analysis](1inch-swap-vm-foundry-migration-analysis.md)
 
 ---
 
-**Verdict:** 🟡 **Successful with gaps**
-
-### Notable gaps (non-blocking, medium+ impact)
-
-- 🚩 No equivalent for `forge snapshot` — gas snapshot workflow unavailable ([#7769](https://github.com/NomicFoundation/hardhat/issues/7769))
+**Verdict:** ✅ **Successful**
 
 ## 1. Test Count Comparison
 
@@ -24,13 +20,6 @@ The 701 > 469 discrepancy is expected: many invariant test contracts inherit bas
 
 ## 2. Feature Parity
 
-### Gaps, bugs & partial support
-
-| Feature | Parity | Impact | Workaround / Notes |
-|---|---|---|---|
-| Gas snapshots (`forge snapshot`) | 🚩 **Gap** | **Medium** — tests run but snapshots can't be generated | [#7769](https://github.com/NomicFoundation/hardhat/issues/7769) — no workaround currently |
-| `forge fmt` (lint/format) | 🚩 **Gap** | **Low** — formatting only; no test impact | Projects typically use prettier + solhint instead |
-
 ### Full parity
 
 These features work equivalently in Hardhat 3:
@@ -42,13 +31,17 @@ These features work equivalently in Hardhat 3:
 - Invariant testing — works across all parametrized contracts
 - Optimizer settings (enabled, runs, via_ir, evmVersion, yul details)
 - `fs_permissions` → `fsPermissions` (read-write directories)
+- Gas snapshots (`forge snapshot` → `npx hardhat test solidity --snapshot` / `--snapshot-check`)
 
 **Features not used by this project:**
+
 - Network configuration / RPC endpoints — no `[rpc_endpoints]` in `foundry.toml`
 - Etherscan verification — no `[etherscan]` section in `foundry.toml`
-- Deployment scripts (`forge script`) — project has `script/` directory but scripts are Foundry-specific `.s.sol` files (no Hardhat equivalent needed for dry-run)
+- Deployment scripting (`forge script` / `.s.sol`) — project has `script/` directory but scripts are Foundry-specific `.s.sol` files (no Hardhat equivalent needed for dry-run)
 - FFI — not enabled
 - Inline test config (`forge-config:` comments) — not used
+
+**Note:** `forge fmt` (`[fmt]` section in `foundry.toml`, `lint`/`format` scripts) is a standalone Foundry tool unrelated to the build/test toolchain. It continues to work regardless of which build tool is used.
 
 ## 3. Workarounds Applied
 
@@ -68,5 +61,5 @@ These features work equivalently in Hardhat 3:
 ## 4. Next Steps
 
 1. **Upstream `@1inch/solidity-utils` exports fix** — file an issue or PR to add `"./contracts/*.sol"` to the package's `exports` field, eliminating the `patch-package` workaround. This affects all Hardhat 3 consumers of the package.
-2. **Gas snapshot alternative** — monitor [#7769](https://github.com/NomicFoundation/hardhat/issues/7769) for Hardhat support. In the interim, gas costs can be observed from test output but automated snapshot regression is unavailable.
-3. **CI integration** — add `pnpm run build-hardhat` and `pnpm run test-hardhat` to CI alongside existing Forge commands to run both toolchains in parallel.
+2. **CI integration** — add `pnpm run build-hardhat` and `pnpm run test-hardhat` to CI alongside existing Forge commands to run both toolchains in parallel.
+3. **Gas snapshot CI** — add `pnpm run snapshot-hardhat` and `pnpm run snapshot-check-hardhat` to CI for gas regression tracking under Hardhat.

@@ -8,7 +8,7 @@ export default defineConfig({
         settings: {
           optimizer: {
             enabled: true,
-            runs: 10_000,
+            runs: 700,
             details: {
               yul: true,
               yulDetails: {

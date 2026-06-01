@@ -15,7 +15,7 @@
     "forge-std": "github:foundry-rs/forge-std#v1.11.0"
   },
   "devDependencies": {
-    "hardhat": "^3.3.0",
+    "hardhat": "^3.7.0",
     "patch-package": "^8.0.0"
   },
   "resolutions": {

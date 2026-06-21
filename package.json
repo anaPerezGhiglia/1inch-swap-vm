@@ -21,11 +21,6 @@
   "resolutions": {
     "elliptic": "6.6.1"
   },
-  "pnpm": {
-    "overrides": {
-      "@openzeppelin/contracts": "5.4.0"
-    }
-  },
   "scripts": {
     "test": "forge test",
     "test-hardhat": "npx hardhat test solidity",
@@ -35,8 +30,7 @@
     "format": "forge fmt",
     "snapshot": "forge snapshot --force --no-match-test \"testFuzz_*\"",
     "snapshot-hardhat": "npx hardhat test solidity --snapshot",
-    "snapshot-check-hardhat": "npx hardhat test solidity --snapshot-check",
-    "postinstall": "patch-package"
+    "snapshot-check-hardhat": "npx hardhat test solidity --snapshot-check"
   },
   "repository": {
     "type": "git",

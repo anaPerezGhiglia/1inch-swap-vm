@@ -1,0 +1,6 @@
+overrides:
+  elliptic: 6.6.1
+  "@openzeppelin/contracts": "5.4.0"
+patchedDependencies:
+  '@1inch/solidity-utils@6.9.5': patches/@1inch__solidity-utils@6.9.5.patch
+  '@1inch/solidity-utils@6.9.7': patches/@1inch__solidity-utils@6.9.7.patch

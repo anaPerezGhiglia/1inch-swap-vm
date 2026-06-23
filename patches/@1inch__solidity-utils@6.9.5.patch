@@ -1,0 +1,15 @@
+diff --git a/package.json b/package.json
+index 45b6757792bf161f2b227315d1f396b19fdac6d8..3a9279e8cf1ff48abe6ae0cb3458c726bc048362 100644
+--- a/package.json
++++ b/package.json
+@@ -6,7 +6,9 @@
+   "exports": {
+     ".": "./dist/src/index.js",
+     "./hardhat-setup": "./dist/hardhat-setup/index.js",
+-    "./docgen": "./dist/docgen/index.js"
++    "./docgen": "./dist/docgen/index.js",
++    "./contracts/*.sol": "./contracts/*.sol",
++    "./test/contracts/*.sol": "./test/contracts/*.sol"
+   },
+   "repository": {
+     "type": "git",
